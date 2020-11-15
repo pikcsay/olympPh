@@ -1,7 +1,6 @@
 import os
-from PyQt5 import uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QUrl
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWebEngineWidgets import *
 from PyQt5.QtWidgets import QApplication, QButtonGroup, QDialog, QFileDialog, QInputDialog, \
     QLabel, QMainWindow, QMessageBox, QPushButton, QTableWidgetItem, QVBoxLayout, QWidget
@@ -10,13 +9,18 @@ from shutil import copy
 import sqlite3
 import sys
 
+from design.design import Ui_MainWindow
+from design.designDatetime import Ui_Dialog1
+from design.designProblems import Ui_Dialog2
 
-class OlympPhysics(QMainWindow):
+
+class OlympPhysics(QMainWindow, Ui_MainWindow):
     BD = 'bd/bd.sql'
 
     def __init__(self):
         super(OlympPhysics, self).__init__()
-        uic.loadUi('design/design.ui', self)
+        self.setupUi(self)
+
         self.con = sqlite3.connect(OlympPhysics.BD)
         self.initUI()
 
@@ -268,6 +272,8 @@ class OlympPhysics(QMainWindow):
             response = get(site)
             # Создаем окно со страницой сайта
             self.web = QWebEngineView()
+            self.web.setWindowTitle('Супер браузер')
+            self.web.setWindowIcon(QIcon('images\icon.ico'))
             self.web.load(QUrl(site))
             self.web.show()
         except:
@@ -393,10 +399,12 @@ class WidProblems(QWidget):
             self.lt.addWidget(img)
 
 
-class ViewProblems(QDialog):
+class ViewProblems(QDialog, Ui_Dialog2):
     def __init__(self, section, mode):
         super(ViewProblems, self).__init__()
-        uic.loadUi('design/designProblems.ui', self)
+        self.setupUi(self)
+        self.setWindowIcon(QIcon('images\problem.ico'))
+
         self.con = sqlite3.connect(OlympPhysics.BD)
         self.section = section
         self.mode = mode
@@ -431,10 +439,11 @@ class ViewProblems(QDialog):
         self.scrollArea.show()
 
 
-class WidDateTime(QDialog):
+class WidDateTime(QDialog, Ui_Dialog1):
     def __init__(self, text_note):
         super(WidDateTime, self).__init__()
-        uic.loadUi('design/designDatetime.ui', self)
+        self.setupUi(self)
+        self.setWindowIcon(QIcon(r'images\time.ico'))
 
         self.text_note = text_note
         self.con = sqlite3.connect(OlympPhysics.BD)
